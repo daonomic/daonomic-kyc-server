@@ -1,5 +1,5 @@
 # simple KYC storage compatible with daonomic-client
-KYC storage is based on files
+KYC storage is based on files (all files are stored in provided directory, /var/kyc by default)
 
 ## Compile and run
 
@@ -14,8 +14,5 @@ By default http server will run at 8080 port. If you want to run on other port, 
 Example of sending httpPort and dataPath:
 
 ```shell
-java -DhttpPort=8081 -DdataPath=/var/kyc -jar target/kyc-server-boot.jar
+java -DhttpPort=8081 -DdataPath=/home/kyc -jar target/kyc-server-boot.jar
 ```
-
-httpPort - port for web server
-dataPath - location where store kyc files
