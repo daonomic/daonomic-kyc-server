@@ -23,6 +23,23 @@
                     <target>1.8</target>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>2.0.0.RELEASE</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <classifier>boot</classifier>
+                    <finalName>${project.artifactId}</finalName>
+                    <outputDirectory>target</outputDirectory>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 

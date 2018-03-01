@@ -16,6 +16,9 @@ public class TestData {
     private List<String> accreditation;
     private String address;
 
+    public TestData() {
+    }
+
     public TestData(String country, String firstName, String lastName, String birthDate, String phone, String post, boolean terms, List<String> passport, List<String> selfie, List<String> accreditation, String address) {
         this.country = country;
         this.firstName = firstName;
