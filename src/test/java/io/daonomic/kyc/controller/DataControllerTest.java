@@ -5,17 +5,15 @@ import io.daonomic.kyc.domain.TestData;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestClientException;
 
 import java.util.Arrays;
-import java.util.UUID;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.fail;
 
 public class DataControllerTest extends AbstractWebIntegrationTest {
     public void setAndGet() {
-        String id = UUID.randomUUID().toString();
+        String id = RandomStringUtils.randomAlphabetic(10);
         TestData data = new TestData(
             "Country",
             "First",

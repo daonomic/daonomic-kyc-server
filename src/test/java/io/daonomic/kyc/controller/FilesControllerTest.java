@@ -2,6 +2,7 @@ package io.daonomic.kyc.controller;
 
 import io.daonomic.kyc.AbstractWebIntegrationTest;
 import io.daonomic.kyc.common.TestResource;
+import io.daonomic.kyc.domain.TestData;
 import io.daonomic.kyc.domain.UploadResult;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
@@ -9,11 +10,13 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.*;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.HttpClientErrorException;
 import org.testng.annotations.Test;
 
 import java.util.Collections;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.fail;
 
 public class FilesControllerTest extends AbstractWebIntegrationTest {
     @Test
@@ -34,6 +37,15 @@ public class FilesControllerTest extends AbstractWebIntegrationTest {
 
         assertEquals(download.getBody(), data);
         assertEquals(download.getHeaders().get("content-type"), Collections.singletonList("application/octet-stream"));
+    }
+
+    public void notFound() {
+        try {
+            restTemplate.getForObject(baseUrl + "/files/{id}", byte[].class, RandomStringUtils.randomAlphabetic(10));
+            fail("should be error");
+        } catch (HttpClientErrorException e) {
+            assertEquals(e.getStatusCode(), HttpStatus.NOT_FOUND);
+        }
     }
 
     private Resource getResource(byte[] data, String filename) {

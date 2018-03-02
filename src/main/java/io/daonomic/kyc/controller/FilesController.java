@@ -23,13 +23,14 @@ import reactor.core.publisher.Mono;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.nio.channels.AsynchronousFileChannel;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.SecureRandom;
 import java.util.Collections;
 import java.util.Optional;
-import java.util.UUID;
 
 import static java.nio.file.StandardOpenOption.CREATE;
 import static java.nio.file.StandardOpenOption.WRITE;
@@ -43,6 +44,7 @@ public class FilesController {
     private String path;
     @Autowired
     private FileService fileService;
+    private final SecureRandom random = new SecureRandom();
 
     @PostMapping(path = "/files", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public Flux<UploadResult> uploadFile(@RequestBody Flux<Part> parts) {
@@ -61,7 +63,7 @@ public class FilesController {
     }
 
     private Mono<UploadResult> uploadFile(FilePart part) throws IOException {
-        final String id = UUID.randomUUID().toString();
+        final String id = generateId();
         return fileService.writeSmallFile(getPath().resolve(id + ".metadata"), objectToJson(new Metadata(part.filename(), Optional.ofNullable(part.headers().getContentType()).map(MimeType::toString).orElse(null))))
             .then(DataBufferUtils.write(part.content(), AsynchronousFileChannel.open(getPath().resolve(id + ".content"), WRITE, CREATE), 0).collectList())
             .then(Mono.just(new UploadResult(id)));
@@ -75,6 +77,12 @@ public class FilesController {
                 response.getHeaders().put("content-type", Collections.singletonList(metadata.getContentType()));
                 return new MyFileSystemResource(new File(path, id + ".content"), metadata.getFilename());
             });
+    }
+
+    private String generateId() {
+        byte[] id = new byte[32];
+        random.nextBytes(id);
+        return new BigInteger(1, id).toString(16);
     }
 
     private byte[] objectToJson(Object t) {
