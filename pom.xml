@@ -6,7 +6,14 @@
 
     <groupId>io.daonomic</groupId>
     <artifactId>kyc-server</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>0.1.0</version>
+
+    <distributionManagement>
+        <repository>
+            <id>bintray-maven</id>
+            <url>https://api.bintray.com/maven/daonomic/maven/kyc-server/;publish=1</url>
+        </repository>
+    </distributionManagement>
 
     <properties>
         <spring.version>5.0.4.RELEASE</spring.version>
