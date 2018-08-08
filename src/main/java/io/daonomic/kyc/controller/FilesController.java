@@ -12,7 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.buffer.DataBufferUtils;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.http.codec.multipart.Part;
 import org.springframework.http.server.reactive.ServerHttpResponse;
@@ -70,12 +73,13 @@ public class FilesController {
     }
 
     @GetMapping("/files/{id}")
-    public Mono<Resource> downloadFile(@PathVariable String id, ServerHttpResponse response) {
+    public Mono<ResponseEntity<Resource>> downloadFile(@PathVariable String id, ServerHttpResponse response) {
         return fileService.readSmallFile(getPath().resolve(id + ".metadata"))
             .map(content -> jsonToObject(content, Metadata.class))
             .map(metadata -> {
-                response.getHeaders().put("content-type", Collections.singletonList(metadata.getContentType()));
-                return new MyFileSystemResource(new File(path, id + ".content"), metadata.getFilename());
+                HttpHeaders headers = new HttpHeaders();
+                headers.put("content-type", Collections.singletonList(metadata.getContentType()));
+                return new ResponseEntity<>(new MyFileSystemResource(new File(path, id + ".content"), metadata.getFilename()), headers, HttpStatus.OK);
             });
     }
 
