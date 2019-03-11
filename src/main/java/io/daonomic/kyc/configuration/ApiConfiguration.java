@@ -1,10 +1,9 @@
 package io.daonomic.kyc.configuration;
 
 import io.daonomic.kyc.Kyc;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.FilterType;
-import org.springframework.context.annotation.Import;
+import io.daonomic.kyc.client.DaonomicClient;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.*;
 import org.springframework.web.reactive.config.EnableWebFlux;
 
 @EnableWebFlux
@@ -16,4 +15,10 @@ import org.springframework.web.reactive.config.EnableWebFlux;
 @ComponentScan(basePackageClasses = Kyc.class, excludeFilters = @ComponentScan.Filter(type = FilterType.ANNOTATION, value = Configuration.class))
 public class ApiConfiguration extends PropertySourceConfiguration {
 
+    @Bean
+    public DaonomicClient daonomicClient(
+        @Value("${daonomicApiUrl:https://api.daonomic.io/v1}") String baseUrl
+    ) {
+        return new DaonomicClient(baseUrl, 10000, 10000);
+    }
 }

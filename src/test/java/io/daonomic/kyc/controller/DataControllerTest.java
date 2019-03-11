@@ -1,19 +1,28 @@
 package io.daonomic.kyc.controller;
 
 import io.daonomic.kyc.AbstractWebIntegrationTest;
+import io.daonomic.kyc.client.DaonomicClient;
 import io.daonomic.kyc.domain.TestData;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
+import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
 
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.fail;
 
 public class DataControllerTest extends AbstractWebIntegrationTest {
+    @Autowired
+    private DaonomicClient daonomicClient;
+
     public void setAndGet() {
         String id = RandomStringUtils.randomAlphabetic(10);
+        when(daonomicClient.notifyDaonomic(id)).thenReturn(Mono.empty());
         TestData data = new TestData(
             "Country",
             "First",
@@ -28,6 +37,7 @@ public class DataControllerTest extends AbstractWebIntegrationTest {
             RandomStringUtils.randomAlphabetic(10)
         );
         restTemplate.postForObject(baseUrl + "/users/{id}", data, Void.class, id);
+        verify(daonomicClient).notifyDaonomic(id);
         TestData response = restTemplate.getForObject(baseUrl + "/users/{id}", TestData.class, id);
         assertEquals(response.getAddress(), data.getAddress());
         assertEquals(response.getCountry(), "Country");

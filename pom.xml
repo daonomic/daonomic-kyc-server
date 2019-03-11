@@ -16,7 +16,12 @@
     </distributionManagement>
 
     <properties>
-        <spring.version>5.0.8.RELEASE</spring.version>
+        <spring.version>5.1.5.RELEASE</spring.version>
+        <jackson.version>2.9.6</jackson.version>
+        <reactor-netty.version>0.8.5.RELEASE</reactor-netty.version>
+        <slf4j-api.version>1.7.25</slf4j-api.version>
+        <logback-classic.version>1.2.3</logback-classic.version>
+        <mockito.version>1.9.0</mockito.version>
     </properties>
 
     <build>
@@ -54,7 +59,7 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.9.6</version>
+            <version>${jackson.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -67,9 +72,9 @@
             <version>${spring.version}</version>
         </dependency>
         <dependency>
-            <groupId>io.projectreactor.ipc</groupId>
+            <groupId>io.projectreactor.netty</groupId>
             <artifactId>reactor-netty</artifactId>
-            <version>0.7.8.RELEASE</version>
+            <version>${reactor-netty.version}</version>
         </dependency>
         <dependency>
             <groupId>org.synchronoss.cloud</groupId>
@@ -79,12 +84,12 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>1.7.25</version>
+            <version>${slf4j-api.version}</version>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.2.3</version>
+            <version>${logback-classic.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -103,6 +108,12 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>3.5</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <version>${mockito.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

@@ -10,10 +10,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.server.reactive.HttpHandler;
 import org.springframework.http.server.reactive.ReactorHttpHandlerAdapter;
 import org.springframework.web.server.adapter.WebHttpHandlerBuilder;
-import reactor.ipc.netty.NettyContext;
-import reactor.ipc.netty.http.HttpResources;
-import reactor.ipc.netty.http.server.HttpServer;
-import reactor.ipc.netty.resources.LoopResources;
+import reactor.netty.DisposableServer;
+import reactor.netty.http.HttpResources;
+import reactor.netty.http.server.HttpServer;
+import reactor.netty.resources.LoopResources;
 
 @Configuration
 public class NettyConfiguration {
@@ -25,13 +25,12 @@ public class NettyConfiguration {
     private ApplicationContext context;
 
     @Bean(destroyMethod = "dispose")
-    public NettyContext server() {
+    public DisposableServer server() {
         logger.info("Web port: {}", httpPort);
         HttpHandler httpHandler = WebHttpHandlerBuilder.applicationContext(context).build();
         ReactorHttpHandlerAdapter adapter = new ReactorHttpHandlerAdapter(httpHandler);
         LoopResources loopResources = LoopResources.create("reactor", LoopResources.DEFAULT_IO_WORKER_COUNT, false);
         HttpResources.set(loopResources);
-        HttpServer server = HttpServer.create("0.0.0.0", httpPort);
-        return server.newHandler(adapter).block();
+        return HttpServer.create().host("0.0.0.0").port(httpPort).handle(adapter).bindNow();
     }
 }

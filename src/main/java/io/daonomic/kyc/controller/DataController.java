@@ -1,5 +1,6 @@
 package io.daonomic.kyc.controller;
 
+import io.daonomic.kyc.client.DaonomicClient;
 import io.daonomic.kyc.service.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,10 +17,13 @@ public class DataController {
     private FileService fileService;
     @Value("${dataPath:/var/kyc}")
     private String path;
+    @Autowired
+    private DaonomicClient daonomicClient;
 
     @PostMapping(value = "/users/{id}", consumes = "application/json")
     public Mono<Void> setData(@PathVariable String id, @RequestBody String body) {
-        return fileService.writeSmallFile(getPath().resolve(id + ".json"), body.getBytes(StandardCharsets.UTF_8));
+        return fileService.writeSmallFile(getPath().resolve(id + ".json"), body.getBytes(StandardCharsets.UTF_8))
+            .then(daonomicClient.notifyDaonomic(id));
     }
 
     @GetMapping(value = "/users/{id}", produces = "application/json")

@@ -1,7 +1,7 @@
 package io.daonomic.kyc;
 
 import io.daonomic.kyc.common.Ports;
-import io.daonomic.kyc.configuration.ApiConfiguration;
+import io.daonomic.kyc.mock.MockContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.springframework.web.client.RestTemplate;
@@ -10,7 +10,7 @@ import org.testng.annotations.*;
 import java.util.List;
 
 @Test(groups = "integration")
-@ContextConfiguration(classes = ApiConfiguration.class)
+@ContextConfiguration(classes = MockContext.class)
 public abstract class AbstractWebIntegrationTest extends AbstractTestNGSpringContextTests {
     protected RestTemplate restTemplate = new RestTemplate();
     protected String baseUrl;
